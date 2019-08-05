@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block title %}
+	Історія
+{% endblock %}
+{% block nav%}
+<ul class="navbar-nav mr-auto mt-2"> 
+	<li class="nav-item"><a class="nav-link" href="\quote" class="nav-item">Ціна</a></li>
+	<li class="nav-item"><a class="nav-link" href="\buy" class="nav-item">Купівля</a></li>
+	<li class="nav-item"><a class="nav-link" href="\sell" class="nav-item">Продаж</a></li>
+	<li class="nav-item"><a class="nav-link active" href="\history" class="nav-item">Історія</a></li>
+</ul>
+{% endblock %}
+{% block reg%}
+<ul class="navbar-nav ml-auto mt-2">
+	<li class="nav-item"><a href="\register"class="nav-link">Рєстрація</a></li>
+	<li class="nav-item"><a href="\login"class="nav-link">Увійти</a></li>
+</ul>
+{% endblock %}
+{% block main %}
+    <table class="table table-striped" >
+        <thead>
+            <tr>
+                <th>Символ</th>
+                <th>Акції</th>
+                <th>Ціна</th>
+                <th>Час транзакції</th>
+            </tr>
+        </thead>
+        <tbody>
+				{% for i in history %}<tr>
+                    <td>{{i[0]}}</td>
+                    <td>{{i[1]}}</td>
+                    <td>{{"%.2f" %(i[2])}}</td>
+                    <td>{{i[3]}}</td>
+                </tr>{%endfor%}
+				
+            
+        </tbody>
+    </table>
+{% endblock %}

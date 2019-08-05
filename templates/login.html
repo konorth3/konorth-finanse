@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block title %}
+	Вхід
+{% endblock %}
+{% block reg%}
+<ul class="navbar-nav ml-auto mt-2">
+	<li class="nav-item"><a href="\register"class="nav-link">Рєстрація</a></li>
+	<li class="nav-item"><a href="\login"class="nav-link active">Увійти</a></li>
+</ul>
+{% endblock %}
+{% block main %}
+	<form action="/login" method="POST" >
+		<div class="form-group">
+			<input name="name" type="text" placeholder="Імя користувача" autofocus class="form-control" required>
+		</div>
+		<div class="form-group">
+			<input name="password" type="password" placeholder="Пароль" class="form-control" required>
+		</div>
+		<div class="button">
+			<button class="btn btn-dark" type="submit"> Увійти </button>
+		</div>
+	</form>
+{% endblock %}

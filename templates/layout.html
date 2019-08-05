@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+	<head>
+		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
+		
+		<link href="static/favicon.ico" rel="icon">
+		
+		<link href="static/style.css" rel="stylesheet">
+		
+		<title>Konorth3 Finance : {% block title %}{% endblock %} </title>
+	</head>
+
+	<body >
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+			<a class="navbar-brand" href="/">
+				<span>Konorth3</span> <span>Finance</span>
+			</a>
+			<div class="collapse navbar-collapse">
+				{% if session.user_id %}
+				{% block nav%}{% endblock %}
+				<ul class="navbar-nav ml-auto mt-2">
+					<li class="nav-item"><a href="\logout"class="nav-link">Вихід</a></li>
+				</ul>
+				{% else %}
+				{% block reg%}{% endblock %}
+				{% endif%}
+			</div>
+		</nav>
+        <main>
+			{% block main %}{% endblock %}
+		</main>
+		<footer >
+			Дані, надані <a href="https://iextrading.com/developer">IEX</a> безкоштовно. Переглянути <a href="https://iextrading.com/api-exhibit-a/">Умови використання IEX</a>.
+		</footer>
+		
+	</body>
+</html>

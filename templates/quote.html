@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block title %}
+	Ціна
+{% endblock %}
+{% block nav%}
+<ul class="navbar-nav mr-auto mt-2"> 
+	<li class="nav-item"><a class="nav-link active" href="\quote" class="nav-item">Ціна</a></li>
+	<li class="nav-item"><a class="nav-link" href="\buy" class="nav-item">Купівля</a></li>
+	<li class="nav-item"><a class="nav-link" href="\sell" class="nav-item">Продаж</a></li>
+	<li class="nav-item"><a class="nav-link" href="\history" class="nav-item">Історія</a></li>
+</ul>
+{% endblock %}
+{% block reg%}
+<ul class="navbar-nav ml-auto mt-2">
+	<li class="nav-item"><a href="\register"class="nav-link">Рєстрація</a></li>
+	<li class="nav-item"><a href="\login"class="nav-link">Увійти</a></li>
+</ul>
+{% endblock %}
+{% block main %}
+{% if request.method == "POST" %}
+	<div class="form-group">
+		<p>
+        Акція {{symbol["name"]}} ({{symbol["symbol"]}}) коштує ${{symbol["price"]}}.
+		</p>
+	</div>
+{% else %}
+	<form action="/quote" method="POST">
+		<div class="form-group">
+			<input name="symbol" type="text" placeholder="Символ акції" autofocus class="form-control" required>
+		</div>
+		<div class="button">
+			<button class="btn btn-dark" type="submit"> Ціна </button>
+		</div>
+	</form>
+{% endif %}
+{% endblock %}
