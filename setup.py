@@ -186,4 +186,4 @@ def logout():
     return redirect("/")
 
 
-app.run(host = "92.253.248.251" port = 1000)
+app.run(host = "92.253.248.251", port = 1000)
