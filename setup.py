@@ -4,13 +4,16 @@ Created on Tue Jul  9 19:53:48 2019
 
 @author: Knorth
 """
+import os, sys
 from flask import Flask, render_template, request, session, redirect
 from flask_session import Session
 import sqlite3
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from  helpers import login_required, lookup
-
+print(sys.argv)
+print("================")
+print(os)
 app = Flask(__name__)
 app.config["SESSION_FILE_DIR"] = "tmp"
 app.config["SESSION_PERMANENT"] = False
