@@ -189,4 +189,4 @@ def logout():
     return redirect("/")
 
 if __name__ == "__main__":
-    app.run(port=sys.argv[1])
+    app.run(host=0.0.0.0, port=sys.argv[1])
