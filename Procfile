@@ -1,1 +1,1 @@
-web: python setup.py $PORT
+web: python setup.py $PORT $HOST
