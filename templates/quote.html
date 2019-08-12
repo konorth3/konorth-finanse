@@ -11,12 +11,6 @@
 	<li class="nav-item"><a class="nav-link" href="\history" class="nav-item">Історія</a></li>
 </ul>
 {% endblock %}
-{% block reg%}
-<ul class="navbar-nav ml-auto mt-2">
-	<li class="nav-item"><a href="\register"class="nav-link">Рєстрація</a></li>
-	<li class="nav-item"><a href="\login"class="nav-link">Увійти</a></li>
-</ul>
-{% endblock %}
 {% block main %}
 {% if request.method == "POST" %}
 	<div class="form-group">
