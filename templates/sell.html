@@ -1,5 +1,44 @@
 {% extends "layout.html" %}
-
+{% block scripts %}
+<script>
+	$(document).ready(function(){
+		$.ajax({
+			method: "GET",
+			url: "http://127.0.0.1:5000/table",
+			dataType: "json",
+			success: function(data){
+				var text = "";
+				for (i in data){
+					text += "<tr onclick=inputValueAndHideTable('" + data[i] + "')><td>" + data[i] +" </td></tr>";
+					$("#list").html(text);
+				};
+				$('#list').collapse('show');
+			}
+		});
+		$("#submit").click(function(e){
+			e.preventDefault();
+			$.ajax({
+				method: "POST",
+				url: "http://127.0.0.1:5000/sell",
+				data: {
+					symbol: $("#symbol").val(),
+					shares: $("#shares").val()
+				},
+				success: function(){
+					window.location.href = "http://127.0.0.1:5000/";
+				},
+				statusCode: {
+					1: function(){showMessage("Вкажіть символ акції")},
+					2: function(){showMessage("Такого символа неіснує")},
+					3: function(){showMessage("Введіть ціле, додатне число")},
+					4: function(){showMessage("У вас немає даних акцій")},
+					5: function(){showMessage("У вас недостатньо акцій для здійснення операції")}
+				}
+			});
+		});
+	});
+</script>
+{% endblock %}
 {% block title %}
 	Продаж
 {% endblock %}
@@ -13,14 +52,21 @@
 {% endblock %}
 {% block main %}
 	<form action="/sell" method="POST" >
+		<div class="form-group" id="errMessage"></div>
 		<div class="form-group">
-			<input name="symbol" type="text" placeholder="Символ акції" autofocus class="form-control" required>
+			<input name="symbol" id="symbol" type="text" placeholder="Символ акції" autofocus class="form-control" required>
 		</div>
 		<div class="form-group">
-			<input name="shares" type="text" placeholder="Кількість акцій" class="form-control" required>
+			<input name="shares" id="shares" type="text" placeholder="Кількість акцій" class="form-control" required>
+		</div>
+		<div class="form-group">
+			<table class="table table-striped">
+				<tbody id="list">
+				</tbody>
+			</table>
 		</div>
 		<div class="button">
-			<button class="btn btn-dark" type="submit"> Продати </button>
+			<button id="submit" class="btn btn-dark" type="submit"> Продати </button>
 		</div>
 	</form>
 {% endblock %}
