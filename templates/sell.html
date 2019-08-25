@@ -4,7 +4,7 @@
 	$(document).ready(function(){
 		$.ajax({
 			method: "GET",
-			url: "http://127.0.0.1:5000/table",
+			url: "http://konorth-finance.herokuapp.com/table",
 			dataType: "json",
 			success: function(data){
 				var text = "";
@@ -19,13 +19,13 @@
 			e.preventDefault();
 			$.ajax({
 				method: "POST",
-				url: "http://127.0.0.1:5000/sell",
+				url: "http://konorth-finance.herokuapp.com/sell",
 				data: {
 					symbol: $("#symbol").val(),
 					shares: $("#shares").val()
 				},
 				success: function(){
-					window.location.href = "http://127.0.0.1:5000/";
+					window.location.href = "http://konorth-finance.herokuapp.com/";
 				},
 				statusCode: {
 					1: function(){showMessage("Вкажіть символ акції")},
