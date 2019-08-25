@@ -5,9 +5,80 @@
 		<link href="static/favicon.ico" rel="icon">
 		
 		<link href="static/style.css" rel="stylesheet">
-		
 		<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+		<script>
+		function showMessage(message){
+			$("#errMessage").html(message);
+			$("#errMessage").collapse("show");
+		}
+		function inputValueAndHideTable(value){
+			symbol.value = value;
+			$('#list').collapse('hide');
+		}
+		function isBigger(word, substring){
+			var i = 0;
+			while (i < substring.length){
+				if (word.length == i) return false;
+				if (word.charCodeAt(i) > substring.charCodeAt(i)) return true;
+				else if (word.charCodeAt(i) == substring.charCodeAt(i)) i++;
+				else return false;
+			}
+			if (substring.length == word.length){
+				i--;
+				return !(word.charCodeAt(i) == substring.charCodeAt(i));
+			}
+			return true;
+		}
+		function isSmaller(word, substring){
+			var i = 0;
+			while (i < substring.length){
+				if (word.length == i) return true;
+				if (word.charCodeAt(i) < substring.charCodeAt(i)) return true;
+				else if (word.charCodeAt(i) == substring.charCodeAt(i)) i++;
+				else return false;
+			}		
+			if (substring.length == word.length){
+				i--;
+				return !(word.charCodeAt(i) == substring.charCodeAt(i));
+			}
+			return false;
+		}
+		function startsWith(word, substring){
+			if (word.length < substring.length) return false;
+			var i = 0;
+			while (i < substring.length){
+				if (word.charCodeAt(i) != substring.charCodeAt(i)) return false;
+					i++;
+			}
+			return true;
+		}
+		function findFirstEntry(array, substring){
+			var left = 0;
+			var	right = array.length - 1;
+			var	center = Math.ceil((left+right)/2);
+			while (right - left > 1){
+				if (isSmaller(array[center], substring)){
+					left = center;
+				}
+				else if (isBigger(array[center], substring)){
+					right = center;
+				} 
+				else if (startsWith(array[center], substring)){
+					right = center;
+				}
+				center = Math.ceil((left+right)/2);
+			}
+			if (startsWith(array[center-1], substring)){
+				return center-1;
+			}
+			if (startsWith(array[center], substring)){
+				return center;
+			}
+			return null;
+		}
+		</script>
+		{% block scripts %}{% endblock %}
 		<title>Konorth3 Finance : {% block title %}{% endblock %} </title>
 	</head>
 
