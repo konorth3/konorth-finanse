@@ -19,7 +19,30 @@
 					1: function (){showMessage("Вкажіть ім'я!")},
 					2: function (){showMessage("Вкажіть пароль")},
 					3: function (){showMessage("Вказані ім'я і/або пароль хибні")},
-					503: function(){alert("go back dor")}
+					503: function(){
+						$.ajax({
+							method: "GET",
+							url: "http://konorth-finance.herokuapp.com/loginBD",
+							data: {
+								name: $("#name").val(),
+								password: $("#password").val()
+							},
+							dataType: "text",
+							success: function(data){
+								if (data[0] === "1") {
+									showMessage("Вкажіть ім'я!")
+								}
+								else if (data[0] === "2") {
+									showMessage("Вкажіть пароль")
+								}
+								else if (data[0] === "3") {
+									showMessage("Вказані ім'я і/або пароль хибні")
+								}
+								else {
+									window.location.href = "http://konorth-finance.herokuapp.com/"
+								}
+							},
+					}
 				}
 			})
 		});
