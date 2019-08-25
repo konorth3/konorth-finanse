@@ -1,5 +1,32 @@
 {% extends "layout.html" %}
+{% block scripts %}
+<script>
+	$(document).ready(function(){
+		$("#login").click(function(e){
+			e.preventDefault();
+			showMessage("Зачекайте");
+			$.ajax({
+				method: "POST",
+				url: "http://127.0.0.1:5000/login",
+				data: {
+					name: $("#name").val(),
+					password: $("#password").val()
+				},
+				success: function(){
+					showMessage("Зачекайте")
+					window.location.href = "http://127.0.0.1:5000/"
+				},
+				statusCode: {
+					1: function (){showMessage("Вкажіть ім'я!")},
+					2: function (){showMessage("Вкажіть пароль")},
+					3: function (){showMessage("Вказані ім'я і/або пароль хибні")}
+				}
+			})
+		});
+	});
 
+</script>
+{% endblock %}
 {% block title %}
 	Вхід
 {% endblock %}
@@ -11,13 +38,14 @@
 {% endblock %}
 {% block main %}
 	<form action="/login" method="POST" >
-		<div class="form-group">
-			<input name="name" type="text" placeholder="Імя користувача" autofocus class="form-control" required>
+		<div class="form-group" id="errMessage"></div>
+		<div class="form-group" >
+			<input name="name" id="name" type="text" placeholder="Імя користувача" autofocus class="form-control" required>
 		</div>
 		<div class="form-group">
-			<input name="password" type="password" placeholder="Пароль" class="form-control" required>
+			<input name="password" id="password" type="password" placeholder="Пароль" class="form-control" required>
 		</div>
-		<div class="button">
+		<div class="button" id="login">
 			<button class="btn btn-dark" type="submit"> Увійти </button>
 		</div>
 	</form>
