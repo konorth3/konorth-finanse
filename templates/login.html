@@ -6,21 +6,20 @@
 			showMessage("Зачекайте");
 			$.ajax({
 				method: "POST",
-				url: "http://konorth-finance.herokuapp.com/login",
+				url: "http://https://konorth-finance.herokuapp.com/login",
 				data: {
 					name: $("#name").val(),
 					password: $("#password").val()
 				},
 				success: function(){
 					showMessage("Зачекайте")
-					window.location.href = "http://konorth-finance.herokuapp.com/"
+					window.location.href = "http://https://konorth-finance.herokuapp.com/"
 				},
 				statusCode: {
 					1: function (){showMessage("Вкажіть ім'я!")},
 					2: function (){showMessage("Вкажіть пароль")},
 					3: function (){showMessage("Вказані ім'я і/або пароль хибні")},
-					503: function(){alert("back dor")}
-					}
+					503: function (){alert("back")}
 				}
 			})
 		});
