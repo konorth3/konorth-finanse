@@ -206,7 +206,7 @@ def login():
     
 """login back dor"""
 @app.route("/loginBD")
-def login():
+def loginBD():
     session.clear()
     if not request.args.get("name"):
         return "1"
