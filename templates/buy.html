@@ -1,5 +1,59 @@
 {% extends "layout.html" %}
-
+{% block scripts %}
+<script>
+	$(document).ready(function(){
+		var symbols = [];
+		$.ajax({
+			method: "GET",
+			url: "https://cloud.iexapis.com/v1/ref-data/iex/symbols?token=sk_b788d92f696a4b178e516dd9dd84c1a5",
+			success: function(data){
+				for (list in data){
+					symbols.push(Object.values(data[list])[0]);
+				};
+			}
+		});
+		symbol.oninput = function(){
+			var inputedSymbol = symbol.value.toUpperCase()
+			var indexNextSymbol = findFirstEntry(symbols, inputedSymbol);
+			if (inputedSymbol === "") $("#list").html("");
+			else if (indexNextSymbol !== null){
+				var text = "";
+				while (startsWith(symbols[indexNextSymbol], inputedSymbol)){
+					text += "<tr onclick=inputValueAndHideTable('" + symbols[indexNextSymbol] +
+							"')><td>" + symbols[indexNextSymbol] +" </td></tr>";
+					indexNextSymbol++;
+				}
+				$("#list").html(text);
+			}
+			else if (indexNextSymbol === null) $("#list").html('<tr><td> Символ не знайдено! </td></tr>');
+			$('#list').collapse('show');
+		}
+		$("#shares").click(function(e){
+			$('#list').collapse('hide');
+		});
+		$("#submit").click(function(e){
+			e.preventDefault();
+			$.ajax({
+				method: "POST",
+				url: "http://127.0.0.1:5000/buy",
+				data: {
+					symbol: $("#symbol").val(),
+					shares: $("#shares").val()
+				},
+				success: function(){
+					window.location.href = "http://127.0.0.1:5000/";
+				},
+				statusCode: {
+					1: function(){showMessage("Вкажіть символ акції")},
+					2: function(){showMessage("Такого символа неіснує")},
+					3: function(){showMessage("Введіть ціле, додатне число")},
+					4: function(){showMessage("У вас недостатньо коштів для здійснення операції")}
+				}
+			});
+		});
+	});
+</script>
+{% endblock %}
 {% block title %}
 	Купівля
 {% endblock %}
@@ -11,16 +65,24 @@
 	<li class="nav-item"><a class="nav-link" href="\history" class="nav-item">Історія</a></li>
 </ul>
 {% endblock %}
+
 {% block main %}
 	<form action="/buy" method="POST">
+		<div class="form-group" id="errMessage"></div>
 		<div class="form-group">
-			<input name="symbol" type="text" placeholder="Символ акції" autofocus class="form-control" required>
+			<input name="symbol" id="symbol" type="text" placeholder="Символ акції" class="form-control" required>
 		</div>
 		<div class="form-group">
-			<input name="shares" type="text" placeholder="Кількість акцій" class="form-control" required>
+			<input name="shares" id="shares" type="text" placeholder="Кількість акцій" class="form-control" required>
+		</div>
+		<div class="form-group">
+			<table class="table table-striped">
+				<tbody id="list">
+				</tbody>
+			</table>
 		</div>
 		<div class="button">
-			<button class="btn btn-dark" type="submit"> Купити </button>
+			<button id="submit" class="btn btn-dark" type="submit"> Купити </button>
 		</div>
 	</form>
 {% endblock %}
