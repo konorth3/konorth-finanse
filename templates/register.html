@@ -1,5 +1,35 @@
 {% extends "layout.html" %}
-
+{% block scripts %}
+<script>
+	$(document).ready(function(){
+		$("#register").click(function(e){
+			e.preventDefault();
+			if ($("#password").val() !== $("#confirmation").val()){
+				showMessage("Паролі не співпадають");
+				return false;
+			}
+			$.ajax({
+				method: "POST",
+				url: "http://127.0.0.1:5000/register",
+				data: {
+					name: $("#reg_name").val(),
+					password: $("#password").val(),
+					confirmation: $("#confirmation").val()
+				},
+				success: function(){
+					window.location.href = "http://127.0.0.1:5000/";
+				},
+				statusCode: {
+					1: function(){showMessage("Вкажіть ім'я")},
+					2: function(){showMessage("Вкажіть пароль")},
+					3: function(){showMessage("Паролі не співпадають")},
+					4: function(){showMessage("Ім'я вже зайняте")}
+				}
+			})
+		});
+	});
+</script>
+{% endblock %}
 {% block title %}
 	Реєстрація
 {% endblock %}
@@ -11,17 +41,18 @@
 {% endblock %}
 {% block main %}
 	<form action="/register" method="POST">
+		<div class="form-group" id="errMessage"></div>
 		<div class="form-group">
-			<input name="name" type="text" placeholder="Імя користувача" autofocus class="form-control" required>
+			<input name="name" id="reg_name" type="text" placeholder="Імя користувача" autofocus class="form-control" required>
 		</div>
 		<div class="form-group">
-			<input name="password" type="password" placeholder="Пароль" class="form-control" required>
+			<input name="password" id="password" type="password" placeholder="Пароль" class="form-control" required>
 		</div>
 		<div class="form-group">
-			<input name="confirmation" type="password" placeholder="Повторіть пароль" class="form-control" required>
+			<input name="confirmation" id="confirmation" type="password" placeholder="Повторіть пароль" class="form-control" required>
 		</div>
 		<div class="button">
-			<button class="btn btn-dark" type="submit"> Зареєструватись</button>
+			<button class="btn btn-dark" id="register" type="submit"> Зареєструватись</button>
 		</div>
 	</form>
 {% endblock %}
