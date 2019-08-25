@@ -10,14 +10,14 @@
 			}
 			$.ajax({
 				method: "POST",
-				url: "http://127.0.0.1:5000/register",
+				url: "http://konorth-finance.herokuapp.com/register",
 				data: {
 					name: $("#reg_name").val(),
 					password: $("#password").val(),
 					confirmation: $("#confirmation").val()
 				},
 				success: function(){
-					window.location.href = "http://127.0.0.1:5000/";
+					window.location.href = "http://konorth-finance.herokuapp.com/";
 				},
 				statusCode: {
 					1: function(){showMessage("Вкажіть ім'я")},
