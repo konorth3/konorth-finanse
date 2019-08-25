@@ -35,13 +35,13 @@
 			e.preventDefault();
 			$.ajax({
 				method: "POST",
-				url: "http://127.0.0.1:5000/buy",
+				url: "http://konorth-finance.herokuapp.com/buy",
 				data: {
 					symbol: $("#symbol").val(),
 					shares: $("#shares").val()
 				},
 				success: function(){
-					window.location.href = "http://127.0.0.1:5000/";
+					window.location.href = "http://konorth-finance.herokuapp.com/";
 				},
 				statusCode: {
 					1: function(){showMessage("Вкажіть символ акції")},
