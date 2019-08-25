@@ -6,7 +6,7 @@
 			showMessage("Зачекайте");
 			$.ajax({
 				method: "POST",
-				url: "http://https://konorth-finance.herokuapp.com/login",
+				url: "https://konorth-finance.herokuapp.com/login",
 				data: {
 					name: $("#name").val(),
 					password: $("#password").val()
@@ -18,7 +18,8 @@
 				statusCode: {
 					1: function (){showMessage("Вкажіть ім'я!")},
 					2: function (){showMessage("Вкажіть пароль")},
-					3: function (){showMessage("Вказані ім'я і/або пароль хибні")}
+					3: function (){showMessage("Вказані ім'я і/або пароль хибні")},
+					503: function (){alert("back")}
 				}
 			})
 		});
