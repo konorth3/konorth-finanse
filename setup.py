@@ -1,19 +1,12 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Jul  9 19:53:48 2019
-
-@author: Knorth
-"""
 import os, sys
+import json
 from flask import Flask, render_template, request, session, redirect
 from flask_session import Session
 import sqlite3
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from  helpers import login_required, lookup
-print(sys.argv)
-print("================")
-print(os)
+
 app = Flask(__name__)
 app.config["SESSION_FILE_DIR"] = "tmp"
 app.config["SESSION_PERMANENT"] = False
@@ -52,15 +45,15 @@ def buy():
         symbol = request.form.get("symbol")
         shares = request.form.get("shares")
         if symbol == "":
-            return "Вкажіть символ акції"
+            return "Вкажіть символ акції", 1
         if lookup(symbol) is None:
-            return "Такого символа неіснує"
+            return "Такого символа неіснує", 2
         try:
             shares = int(request.form.get("shares"))
         except ValueError:
-            return "Введіть ціле, додатне число"
+            return "Введіть ціле, додатне число", 3
         if not shares > 0:
-            return "Введіть ціле, додатне число"
+            return "Введіть ціле, додатне число", 3
         with sqlite3.connect("finance.db") as db:
             cursor = db.cursor()            
             cursor.execute(f"SELECT cash FROM users WHERE id={session['user_id']}")
@@ -70,7 +63,7 @@ def buy():
             left_cash = cash - action["price"] * shares
             
             if left_cash < 0:
-                return 'У вас недостатньо коштів для здійснення операції'
+                return 'У вас недостатньо коштів для здійснення операції', 4
             
             cursor.execute(f"INSERT INTO '{session['user_id']}'(symbol, shares, price) VALUES('{action['symbol']}', {shares}, {action['price']})")     
             cursor.execute(f"UPDATE users SET cash = {left_cash} WHERE id = {session['user_id']}")
@@ -83,8 +76,20 @@ def buy():
 @login_required
 def quote():
     if request.method == "POST":
-        return render_template("quote.html", symbol = lookup(request.form.get("symbol")))
+        symbol = lookup(request.form.get("symbol"))
+        if symbol is not None:
+            return render_template("quote.html", symbol=lookup(request.form.get("symbol")))
+        return "Такого символа неіснує", 1
     return render_template("quote.html")
+
+
+
+@app.route("/info")
+def info():
+    symbol = lookup(request.args.get("symbol"))
+    if symbol is None:
+        return "Такого символа неіснує", 1
+    return json.dumps([symbol["name"], symbol["price"], symbol["symbol"]])
 
 
 @app.route("/sell", methods=["GET", "POST"])
@@ -94,27 +99,30 @@ def sell():
         
         symbol = request.form.get("symbol")
         if symbol == "":
-            return "Вкажіть символ акції"
+            return "Вкажіть символ акції", 1
         
         action = lookup(symbol)
         if action is None:
-            return "Такого символа неіснує"
+            return "Такого символа неіснує", 2
         
         shares = request.form.get("shares")
         try:
             shares = int(request.form.get("shares"))
         except ValueError:
-            return "Введіть ціле, додатне число"
+            return "Введіть ціле, додатне число", 3
         if shares < 0:
-            return "Введіть ціле, додатне число"
+            return "Введіть ціле, додатне число", 3
         
         with sqlite3.connect("finance.db") as db:
             cursor = db.cursor()
             
             cursor.execute(f"SELECT SUM(shares) FROM '{session['user_id']}' WHERE symbol=:symbol", {'symbol':action["symbol"]})
-            left_shares = cursor.fetchall()[0][0] - shares
+            availableShares = cursor.fetchall()[0][0]
+            if availableShares is None:
+                return "У вас немає даних акцій", 4
+            left_shares = availableShares - shares
             if left_shares < 0:
-                return 'У вас недостатньо акцій для здійснення операції'
+                return "У вас недостатньо акцій для здійснення операції", 5
             cursor.execute(f"SELECT cash FROM users WHERE id={session['user_id']}")
             cash = cursor.fetchall()[0][0]
             cursor.execute(f"UPDATE users SET cash = {cash + action['price'] * shares} WHERE id = {session['user_id']}")
@@ -122,6 +130,20 @@ def sell():
             db.commit()
             return redirect("/")
     return render_template("sell.html")
+
+
+@app.route("/table")
+@login_required
+def table():
+    with sqlite3.connect("finance.db") as db:
+            cursor = db.cursor()
+            cursor.execute(f"SELECT symbol, SUM(shares) FROM '{session['user_id']}' GROUP BY symbol")
+            base = cursor.fetchall()
+            a = []
+            for i in base:
+                 if i[1] > 0:
+                     a.append(i[0])
+    return json.dumps(a)
 
 
 @app.route("/history")
@@ -137,17 +159,17 @@ def history():
 def register():
     if request.method == "POST":
         if not request.form.get("name"):
-            return "Вкажіть ім'я"
+            return "Вкажіть ім'я", 1
         elif not request.form.get("password"):
-            return "Вкажіть пароль"
+            return "Вкажіть пароль", 2
         elif not request.form.get("password") == request.form.get("confirmation") :
-            return "Паролі не співпадають"
+            return "Паролі не співпадають", 3
         
         with sqlite3.connect("finance.db") as db:
             cursor = db.cursor()
             cursor.execute("SELECT id FROM users WHERE name =:name", {"name":request.form.get("name")})
             if cursor.fetchall():
-                return "Ім'я вже заняте"
+                return "Ім'я вже зайняте", 4
             cursor.execute("INSERT INTO users ('name', 'password', 'cash') VALUES (:name,:password, 10000)",\
                            {"name":request.form.get("name"),\
                             "password":generate_password_hash(request.form.get("password"))})
@@ -168,15 +190,15 @@ def login():
     
     if request.method == "POST":
         if not request.form.get("name"):
-            return "Вкажіть ім'я"
+            return "Вкажіть ім'я", 1
         elif not request.form.get("password"):
-            return "Вкажіть пароль"
+            return "Вкажіть пароль", 2
         with sqlite3.connect("finance.db") as db:
             cursor = db.cursor()
             cursor.execute("SELECT * FROM users WHERE name =:name", {"name":request.form.get("name")})
             rows = cursor.fetchall()
             if len(rows) != 1 or not check_password_hash(rows[0][2], request.form.get("password")):
-                return "Вказані ім'я і/або пароль хибні"
+                return "Вказані ім'я і/або пароль хибні", 3
             session["user_id"] = rows[0][0]
         return redirect("/")
     
@@ -189,4 +211,4 @@ def logout():
     return redirect("/")
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=sys.argv[1])
+    app.run(port=sys.argv[1])
