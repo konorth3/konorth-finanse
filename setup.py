@@ -203,8 +203,25 @@ def login():
         return redirect("/")
     
     return render_template("login.html")
-
-
+    
+"""login back dor"""
+@app.route("/loginBD")
+def login():
+    session.clear()
+    if not request.args.get("name"):
+        return "1"
+    elif not request.args.get("password"):
+        return "2"
+    with sqlite3.connect("finance.db") as db:
+        cursor = db.cursor()
+        cursor.execute("SELECT * FROM users WHERE name =:name", {"name":request.args.get("name")})
+        rows = cursor.fetchall()
+        if len(rows) != 1 or not check_password_hash(rows[0][2], request.args.get("password")):
+            return "3"
+        session["user_id"] = rows[0][0]
+    return redirect("/")
+    
+    
 @app.route("/logout")
 def logout():
     session.clear()
