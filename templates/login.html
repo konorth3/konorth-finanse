@@ -7,14 +7,14 @@
 			showMessage("Зачекайте");
 			$.ajax({
 				method: "POST",
-				url: "http://127.0.0.1:5000/login",
+				url: "http://konorth-finance.herokuapp.com/login",
 				data: {
 					name: $("#name").val(),
 					password: $("#password").val()
 				},
 				success: function(){
 					showMessage("Зачекайте")
-					window.location.href = "http://127.0.0.1:5000/"
+					window.location.href = "http://konorth-finance.herokuapp.com/"
 				},
 				statusCode: {
 					1: function (){showMessage("Вкажіть ім'я!")},
