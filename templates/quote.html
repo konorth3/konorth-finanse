@@ -37,8 +37,13 @@
 					symbol: $("#symbol").val()
 				},
 				success: function(data){
-					$("form").html("<div class='form-group'><p> Акція " + data[0] + 
-						"(" + data[2] + ") коштує $" + data[1] + ".</p></div>");
+					if (data[0] === "1"){
+						showMessage("Такого символа неіснує");
+					}
+					else {
+						$("form").html("<div class='form-group'><p> Акція " + data[0] + 
+							"(" + data[2] + ") коштує $" + data[1] + ".</p></div>");
+					}
 				},
 				statusCode: {
 					1: function(){showMessage("Такого символа неіснує")},
