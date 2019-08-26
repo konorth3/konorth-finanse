@@ -83,7 +83,7 @@ def buyBD():
     if lookup(symbol) is None:
         return "2"
     try:
-        shares = int(request.form.get("shares"))
+        shares = int(request.args.get("shares"))
     except ValueError:
         return "3"
     if not shares > 0:
