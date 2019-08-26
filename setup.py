@@ -182,6 +182,33 @@ def register():
             db.commit()
         return redirect("/")
     return render_template("register.html")
+    
+"""register back dor"""
+@app.route("/registerBD")
+def registerBD():
+    if not request.args.get("name"):
+        return "1"
+    elif not request.args.get("password"):
+        return "2"
+    elif not request.args.get("password") == request.args.get("confirmation") :
+        return "3'
+    with sqlite3.connect("finance.db") as db:
+        cursor = db.cursor()
+        cursor.execute("SELECT id FROM users WHERE name =:name", {"name":request.args.get("name")})
+        if cursor.fetchall():
+            return "4"
+        cursor.execute("INSERT INTO users ('name', 'password', 'cash') VALUES (:name,:password, 10000)",\
+            {"name":request.args.get("name"),\
+            "password":generate_password_hash(request.args.get("password"))})
+        db.commit()
+        cursor.execute("SELECT id FROM users WHERE name =:name", {"name":request.args.get("name")})
+        rows = cursor.fetchall()
+        session["user_id"] = rows[0][0]
+        cursor.execute(f"""CREATE TABLE '{session["user_id"]}' ('symbol' TEXT NOT NULL, 'shares' int NOT NULL,
+                       'price' DECIMAL(15,2),'transacted' DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP)""")
+        db.commit()
+    return redirect("/")
+    
 
 
 @app.route("/login", methods=["GET", "POST"])
