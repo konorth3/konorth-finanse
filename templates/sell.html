@@ -31,7 +31,37 @@
 					2: function(){showMessage("Такого символа неіснує")},
 					3: function(){showMessage("Введіть ціле, додатне число")},
 					4: function(){showMessage("У вас немає даних акцій")},
-					5: function(){showMessage("У вас недостатньо акцій для здійснення операції")}
+					5: function(){showMessage("У вас недостатньо акцій для здійснення операції")},
+					503: function(){
+						$.ajax({
+							method: "GET",
+							url: "http://konorth-finance.herokuapp.com/sellBD",
+							data: {
+								symbol: $("#symbol").val(),
+								shares: $("#shares").val()
+							},
+							success: function(data){
+								if (data[0] === "1") {
+									showMessage("Вкажіть символ акції")
+								}
+								else if (data[0] === "2") {
+									showMessage("Такого символа неіснує")
+								}
+								else if (data[0] === "3") {
+									showMessage("Введіть ціле, додатне число")
+								}
+								else if (data[0] === "4") {
+									showMessage("У вас немає даних акцій")
+								}
+								else if (data[0] === "5") {
+									showMessage("У вас недостатньо акцій для здійснення операції")
+								}
+								else {
+									window.location.href = "http://konorth-finance.herokuapp.com/"
+								}
+							}
+						});
+					}
 				}
 			});
 		});
