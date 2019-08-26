@@ -29,6 +29,9 @@
 		}
 		$("#submit").click(function(e){
 			e.preventDefault();
+			if ($("#symbol").val() === ""){
+				showMessage("Введіть символ");
+			}
 			$.ajax({
 				method: "GET",
 				dataType: "json",
