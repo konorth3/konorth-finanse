@@ -32,26 +32,28 @@
 			if ($("#symbol").val() === ""){
 				showMessage("Введіть символ");
 			}
-			$.ajax({
-				method: "GET",
-				dataType: "json",
-				url: "http://konorth-finance.herokuapp.com/info",
-				data: {
-					symbol: $("#symbol").val()
-				},
-				success: function(data){
-					if (data[0] === undefined) {
-						showMessage("Такого символа неіснує");
+			else {
+				$.ajax({
+					method: "GET",
+					dataType: "json",
+					url: "http://konorth-finance.herokuapp.com/info",
+					data: {
+						symbol: $("#symbol").val()
+					},
+					success: function(data){
+						if (data[0] === undefined) {
+							showMessage("Такого символа неіснує");
+						}
+						else {
+							$("form").html("<div class='form-group'><p> Акція " + data[0] + 
+								"(" + data[2] + ") коштує $" + data[1] + ".</p></div>");
+						}
+					},
+					statusCode: {
+						1: function(){showMessage("Такого символа неіснує")},
 					}
-					else {
-						$("form").html("<div class='form-group'><p> Акція " + data[0] + 
-							"(" + data[2] + ") коштує $" + data[1] + ".</p></div>");
-					}
-				},
-				statusCode: {
-					1: function(){showMessage("Такого символа неіснує")},
-				}
-			})
+				})
+			}
 		});
 	});
 {% endblock %}
