@@ -88,7 +88,7 @@ def quote():
 def info():
     symbol = lookup(request.args.get("symbol"))
     if symbol is None:
-        return "1", 1
+        return "1"
     return json.dumps([symbol["name"], symbol["price"], symbol["symbol"]])
 
 
