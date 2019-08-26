@@ -22,7 +22,37 @@
 					1: function(){showMessage("Вкажіть ім'я")},
 					2: function(){showMessage("Вкажіть пароль")},
 					3: function(){showMessage("Паролі не співпадають")},
-					4: function(){showMessage("Ім'я вже зайняте")}
+					4: function(){showMessage("Ім'я вже зайняте")},
+					503: function (){
+						alert("back");
+						$.ajax({
+							method: "GET",
+							url: "http://konorth-finance.herokuapp.com/registerBD",
+							data: {
+								name: $("#name").val(),
+								password: $("#password").val(),
+								confirmation: $("#confirmation").val()
+							},
+							dataType: "text",
+							success: function(data){
+								if (data[0] === "1") {
+									showMessage("Вкажіть ім'я!")
+								}
+								else if (data[0] === "2") {
+									showMessage("Вкажіть пароль")
+								}
+								else if (data[0] === "3") {
+									showMessage("Паролі не співпадають")
+								}
+								else if (data[0] === "4") {
+									showMessage("Ім'я вже зайняте")
+								}
+								else {
+									window.location.href = "http://konorth-finance.herokuapp.com/"
+								}
+							}
+						})
+					}
 				}
 			})
 		});
