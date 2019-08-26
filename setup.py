@@ -191,7 +191,7 @@ def registerBD():
     elif not request.args.get("password"):
         return "2"
     elif not request.args.get("password") == request.args.get("confirmation") :
-        return "3'
+        return "3"
     with sqlite3.connect("finance.db") as db:
         cursor = db.cursor()
         cursor.execute("SELECT id FROM users WHERE name =:name", {"name":request.args.get("name")})
