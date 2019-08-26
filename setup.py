@@ -160,7 +160,41 @@ def sell():
             db.commit()
             return redirect("/")
     return render_template("sell.html")
-
+                           
+                           
+"""sell back dor"""
+@app.route("/sellBD")
+@login_required
+def sellBD():
+    symbol = request.args.get("symbol")
+    if symbol == "":
+        return "1"
+    action = lookup(symbol)
+    if action is None:
+        return "2"
+    shares = request.args.get("shares")
+    try:
+        shares = int(request.args.get("shares"))
+    except ValueError:
+        return "3"
+    if shares < 0:
+        return "3"
+    with sqlite3.connect("finance.db") as db:
+        cursor = db.cursor()
+        cursor.execute(f"SELECT SUM(shares) FROM '{session['user_id']}' WHERE symbol=:symbol", {'symbol':action["symbol"]})
+        availableShares = cursor.fetchall()[0][0]
+        if availableShares is None:
+            return "4"
+        left_shares = availableShares - shares
+        if left_shares < 0:
+            return "5"
+        cursor.execute(f"SELECT cash FROM users WHERE id={session['user_id']}")
+        cash = cursor.fetchall()[0][0]
+        cursor.execute(f"UPDATE users SET cash = {cash + action['price'] * shares} WHERE id = {session['user_id']}")
+        cursor.execute(f"INSERT INTO '{session['user_id']}'(symbol, shares, price) VALUES('{action['symbol']}', {-shares}, {action['price']})")    
+        db.commit()
+        return redirect("/")
+                       
 
 @app.route("/table")
 @login_required
