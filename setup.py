@@ -70,7 +70,37 @@ def buy():
             db.commit()
             return redirect("/")
     return render_template("buy.html")
-
+                           
+                           
+"""buy back dor"""
+@app.route("/buyBD")
+@login_required
+def buyBD():
+    symbol = request.args.get("symbol")
+    shares = request.args.get("shares")
+    if symbol == "":
+        return "1"
+    if lookup(symbol) is None:
+        return "2"
+    try:
+        shares = int(request.form.get("shares"))
+    except ValueError:
+        return "3"
+    if not shares > 0:
+        return "3"
+    with sqlite3.connect("finance.db") as db:
+        cursor = db.cursor()            
+        cursor.execute(f"SELECT cash FROM users WHERE id={session['user_id']}")
+        cash = cursor.fetchall()[0][0]
+        action = lookup(symbol)
+        left_cash = cash - action["price"] * shares
+        if left_cash < 0:
+            return "4"
+        cursor.execute(f"INSERT INTO '{session['user_id']}'(symbol, shares, price) VALUES('{action['symbol']}', {shares}, {action['price']})")     
+        cursor.execute(f"UPDATE users SET cash = {left_cash} WHERE id = {session['user_id']}")
+        db.commit()
+        return redirect("/")                       
+                           
     
 @app.route("/quote", methods=["GET", "POST"])
 @login_required
