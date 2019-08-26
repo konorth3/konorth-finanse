@@ -41,38 +41,12 @@
 						showMessage("Такого символа неіснує");
 					}
 					else {
-						alert("1st");
-						alert(data[0]);
 						$("form").html("<div class='form-group'><p> Акція " + data[0] + 
 							"(" + data[2] + ") коштує $" + data[1] + ".</p></div>");
 					}
 				},
 				statusCode: {
 					1: function(){showMessage("Такого символа неіснує")},
-					503: function(){
-						$.ajax({
-							method: "GET",
-							dataType: "text",
-							url: "http://konorth-finance.herokuapp.com/info",
-							data: {
-								symbol: $("#symbol").val()
-							},
-							success: function(data){
-								if (data[0] === "1"){
-									showMessage("Такого символа неіснує");
-								}
-								else {
-									alert("2st");
-									$("form").html("<div class='form-group'><p> Акція " + data[0] + 
-										"(" + data[2] + ") коштує $" + data[1] + ".</p></div>");
-								}
-							},
-							statusCode: {
-								1: function(){showMessage("Такого символа неіснує")}
-
-							}
-						})
-					}
 				}
 			})
 		});
