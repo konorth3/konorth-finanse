@@ -38,7 +38,7 @@ def index():
             return render_template("index.html", table=table, cash=cash, total_sum="%.2f" %(total_sum))
                            
 @app.route("/invite")
-def index():
+def invite():
     return render_template("invite.html")
 
                            
