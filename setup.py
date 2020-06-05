@@ -36,7 +36,13 @@ def index():
                     table.append([a["symbol"], a["name"], i[1], "%.2f" %(a["price"]), "%.2f" %(i[1] * a["price"])])
                     total_sum +=  float("%.2f" %(i[1] * a["price"]))
             return render_template("index.html", table=table, cash=cash, total_sum="%.2f" %(total_sum))
+                           
+@app.route("/invite")
+def index():
+    return render_template("invite.html")
 
+                           
+                       
 
 @app.route("/buy", methods=["GET", "POST"])
 @login_required
