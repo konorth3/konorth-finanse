@@ -41,9 +41,6 @@ def index():
 def invite():
     return render_template("invite.html")
 
-                           
-                       
-
 @app.route("/buy", methods=["GET", "POST"])
 @login_required
 def buy():
