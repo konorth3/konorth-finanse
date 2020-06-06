@@ -37,9 +37,6 @@ def index():
                     total_sum +=  float("%.2f" %(i[1] * a["price"]))
             return render_template("index.html", table=table, cash=cash, total_sum="%.2f" %(total_sum))
                            
-@app.route("/invite")
-def invite():
-    return render_template("invite.html")
 
 @app.route("/buy", methods=["GET", "POST"])
 @login_required
